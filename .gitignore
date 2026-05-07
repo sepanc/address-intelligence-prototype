@@ -1,0 +1,24 @@
+# Environment variables - NEVER commit real API keys
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+env/
+venv/
+.env
+# Exclude real customer data
+/data/r*.csv
+/data/synthetic*.csv
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
