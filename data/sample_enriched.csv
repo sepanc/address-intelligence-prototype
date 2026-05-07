@@ -1,0 +1,11 @@
+PBKEY,FORMATTEDADDRESS,ADDRLINE1,ADDRLINE2,CITY,ADMIN1,POSTALCODE,PROPTYPE,FIPS,LATITUDE,LONGITUDE,is_dirty,mutation_category,mutation_desc,mcp_verify_status,mcp_verified_address,mcp_verified_city,mcp_verified_state,mcp_verified_zip,mcp_verify_score,mcp_street_corrected,mcp_zip_corrected,mcp_city_corrected,enrich_flood_zone,enrich_flood_panel_no,enrich_flood_dist_100yr,enrich_flood_dist_500yr,enrich_flood_elevation,enrich_building_type,enrich_building_area_sqft,enrich_fire_station_dist_mi,enrich_fire_drivetime_peak_min,enrich_fire_drivetime_night_min,enrich_segment,enrich_income_tier,enrich_avg_income,enrich_avg_home_value,enrich_avg_rent
+,"3911 Carlson St, Apt 167, Meganside, PA 22054",3911 Carlson St,Apt 167,Meganside,PA,22054,X,90764,,,False,,,error,,,,,0,False,False,False,,,,,,,,,,,,,,,
+,"6324 Chen Ave, Port Maria, MO 39871",6324 Chen Ave,,Port Maria,MO,39871,M,54991,,,False,,,error,,,,,0,False,False,False,,,,,,,,,,,,,,,
+,"811 Moran Ct, Apt 97, West Lauraberg, OR 18161",811 Moran Ct,Apt 97,West Lauraberg,OR,18161,R,2928,,,False,,,error,,,,,0,False,False,False,,,,,,,,,,,,,,,
+,"9144 Dean Ln, Andrewberg, TX 89407",9144 Dean Ln,,Andrewberg,TX,89407,M,6624,,,False,,,error,,,,,0,False,False,False,,,,,,,,,,,,,,,
+,"5920 Smith Dr, Apt 175, Williamsshire, VT 81015",5920 Smith Dr,Apt 175,Williamsshire,VT,81015,R,76964,,,False,,,error,,,,,0,False,False,False,,,,,,,,,,,,,,,
+,"2903 Miller Dr, New Joseph, IL 67364",2903 Miller Dr,,New Joseph,IL,67364,M,15886,,,False,,,error,,,,,0,False,False,False,,,,,,,,,,,,,,,
+,"9225 Smith Dr, Port Christophershire, VA 07488",9225 Smith Dr,,Port Christophershire,VA,7488,R,33069,,,False,,,error,,,,,0,False,False,False,,,,,,,,,,,,,,,
+,"1779 Betlran Ave, Edwardsfort, SC 18825",1779 Betlran Ave,,Edwardsfort,SC,18825,R,80206,,,True,typographic,Transposed characters in street name,error,,,,,0,False,False,False,,,,,,,,,,,,,,,
+,"3711 Clark Ct, Martinburgh, SC 51435",3711 Clark Ct,,Martinburgh,SC,51435,B,60525,,,True,structural,Missing unit/apt number,error,,,,,0,False,False,False,,,,,,,,,,,,,,,
+,"7024 Blel Rd, Apt 196, Richardbury, MD 54154",7024 Blel Rd,Apt 196,Richardbury,MD,54154,M,48586,,,True,typographic,Transposed characters in street name,error,,,,,0,False,False,False,,,,,,,,,,,,,,,
