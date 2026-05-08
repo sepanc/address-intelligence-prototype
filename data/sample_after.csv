@@ -1,11 +1,11 @@
 PBKEY,FORMATTEDADDRESS,ADDRLINE1,ADDRLINE2,CITY,ADMIN1,POSTALCODE,PROPTYPE,FIPS,LATITUDE,LONGITUDE,is_dirty,mutation_category,mutation_desc,mcp_verify_status,mcp_verified_address,mcp_verified_city,mcp_verified_state,mcp_verified_zip,mcp_verify_score,mcp_street_corrected,mcp_zip_corrected,mcp_city_corrected
-,"3911 Carlson St, Apt 167, Meganside, PA 22054",3911 Carlson St,Apt 167,Meganside,PA,22054,X,90764,,,False,,,error,,,,,0,False,False,False
-,"6324 Chen Ave, Port Maria, MO 39871",6324 Chen Ave,,Port Maria,MO,39871,M,54991,,,False,,,error,,,,,0,False,False,False
-,"811 Moran Ct, Apt 97, West Lauraberg, OR 18161",811 Moran Ct,Apt 97,West Lauraberg,OR,18161,R,02928,,,False,,,error,,,,,0,False,False,False
-,"9144 Dean Ln, Andrewberg, TX 89407",9144 Dean Ln,,Andrewberg,TX,89407,M,06624,,,False,,,error,,,,,0,False,False,False
-,"5920 Smith Dr, Apt 175, Williamsshire, VT 81015",5920 Smith Dr,Apt 175,Williamsshire,VT,81015,R,76964,,,False,,,error,,,,,0,False,False,False
-,"2903 Miller Dr, New Joseph, IL 67364",2903 Miller Dr,,New Joseph,IL,67364,M,15886,,,False,,,error,,,,,0,False,False,False
-,"9225 Smith Dr, Port Christophershire, VA 07488",9225 Smith Dr,,Port Christophershire,VA,07488,R,33069,,,False,,,error,,,,,0,False,False,False
-,"1779 Betlran Ave, Edwardsfort, SC 18825",1779 Betlran Ave,,Edwardsfort,SC,18825,R,80206,,,True,typographic,Transposed characters in street name,error,,,,,0,False,False,False
-,"3711 Clark Ct, Martinburgh, SC 51435",3711 Clark Ct,,Martinburgh,SC,51435,B,60525,,,True,structural,Missing unit/apt number,error,,,,,0,False,False,False
-,"7024 Blel Rd, Apt 196, Richardbury, MD 54154",7024 Blel Rd,Apt 196,Richardbury,MD,54154,M,48586,,,True,typographic,Transposed characters in street name,error,,,,,0,False,False,False
+,"3911 Johnson St, Apt 167, Blairbury, PA 79961",3911 Johnson St,Apt 167,Blairbury,PA,79961,X,99420,,,False,,,error,,,,,0,False,False,False
+,"6324 Martin Ave, New Pamela, MO 98125",6324 Martin Ave,,New Pamela,MO,98125,M,89857,,,False,,,error,,,,,0,False,False,False
+,"811 Jones Ct, Apt 97, Lake Alex, OR 94668",811 Jones Ct,Apt 97,Lake Alex,OR,94668,R,61319,,,False,,,error,,,,,0,False,False,False
+,"9144 Smith Ln, New Natasha, TX 31772",9144 Smith Ln,,New Natasha,TX,31772,M,43242,,,False,,,error,,,,,0,False,False,False
+,"5920 Golden Dr, Apt 175, North Luke, VT 54284",5920 Golden Dr,Apt 175,North Luke,VT,54284,R,18307,,,False,,,error,,,,,0,False,False,False
+,"2903 Snyder Dr, South Williammouth, IL 53768",2903 Snyder Dr,,South Williammouth,IL,53768,M,03270,,,False,,,error,,,,,0,False,False,False
+,"9225 Leon Dr, Jilltown, VA 90521",9225 Leon Dr,,Jilltown,VA,90521,R,76682,,,False,,,error,,,,,0,False,False,False
+,"1779 Waktins Ave, Gavinton, SC 45508",1779 Waktins Ave,,Gavinton,SC,45508,R,46259,,,True,typographic,Transposed characters in street name,error,,,,,0,False,False,False
+,"3711 Williamson Ct, Port Melindaside, SC 84473",3711 Williamson Ct,,Port Melindaside,SC,84473,B,07566,,,True,structural,Missing unit/apt number,error,,,,,0,False,False,False
+,"7024 Rviera Rd, Apt 196, Butlerbury, MD 23090",7024 Rviera Rd,Apt 196,Butlerbury,MD,23090,M,52235,,,True,typographic,Transposed characters in street name,error,,,,,0,False,False,False
