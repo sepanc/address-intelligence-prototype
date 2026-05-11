@@ -158,61 +158,152 @@ def enrich_address(address: str, country: str = "USA") -> dict:
 
     return enrichment
 
-# ── 4. Generate narratives ─────────────────────────────────────────────────
-def generate_narratives(verified_address: str, proptype: str, enrichment: dict) -> dict:
+# ── Narrative prompts ──────────────────────────────────────────────────────
+PROMPT_RAW = """You are an insurance underwriting AI reviewing a raw policyholder-submitted address.
 
-    basic_prompt = f"""You are an insurance underwriting AI. Write a 2-3 sentence underwriting assessment for this property based only on the verified address and property type.
-
-Address      : {verified_address}
+Raw address  : {raw_address}
 Property type: {proptype}
 
-Be specific about what you can and cannot determine from the address alone.
-Reply with ONLY the narrative text, no JSON, no labels."""
+Write 2-3 sentences on what you can assess from this raw input alone.
+Be explicit about what risk factors you cannot determine and why that creates premium uncertainty.
+Reply with ONLY the narrative text."""
 
-    enhanced_prompt = f"""You are an insurance underwriting AI. Write a 2-3 sentence underwriting assessment for this property using the verified address and full location intelligence data.
+PROMPT_VERIFIED = """You are an insurance underwriting AI. This address has been verified and standardized by Precisely.
 
-Address          : {verified_address}
+Raw address     : {raw_address}
+Verified address: {verified_address}
+Corrections made: {corrections}
+Property type   : {proptype}
+
+Previous assessment was based on raw input only.
+Write 2-3 sentences: what did verification change, and what risk insight did the correction unlock?
+If corrections were made, explicitly state what premium mispricing the raw address would have caused.
+Reply with ONLY the narrative text."""
+
+PROMPT_GEOCODED = """You are an insurance underwriting AI. This address has been verified and geocoded to building level by Precisely.
+
+Verified address: {verified_address}
+Latitude        : {latitude}
+Longitude       : {longitude}
+Precision       : {precision}
+PreciselyID     : {pb_key}
+Property type   : {proptype}
+
+Previous assessment was based on verified address only.
+Write exactly 2-3 sentences. No bullet points. No numbered lists.
+What does building-level geocoding add to the risk picture?
+What can you now assess that the address alone could not support — CAT model placement, flood map matching, fire district routing?
+Reply with ONLY the narrative text."""
+
+PROMPT_ENRICHED = """You are an insurance underwriting AI delivering a final underwriting assessment.
+
+Verified address : {verified_address}
 Property type    : {proptype}
-Flood zone       : {fmt(enrichment.get('enrich_flood_zone'))}
-Dist to 100yr    : {fmt(enrichment.get('enrich_flood_dist_100yr'))} ft
-Dist to 500yr    : {fmt(enrichment.get('enrich_flood_dist_500yr'))} ft
-Elevation        : {fmt(enrichment.get('enrich_flood_elevation'))} ft
-Building type    : {fmt(enrichment.get('enrich_building_type'))}
-Building sqft    : {fmt(enrichment.get('enrich_building_area_sqft'))}
-Fire station     : {fmt(enrichment.get('enrich_fire_station_dist_mi'))} mi
-Fire drive peak  : {fmt(enrichment.get('enrich_fire_drivetime_peak_min'))} min
-Fire drive night : {fmt(enrichment.get('enrich_fire_drivetime_night_min'))} min
-Neighborhood     : {fmt(enrichment.get('enrich_segment'))}
-Income tier      : {fmt(enrichment.get('enrich_income_tier'))}
-Avg income       : {fmt(enrichment.get('enrich_avg_income'))}
-Avg home value   : {fmt(enrichment.get('enrich_avg_home_value'))}
-Avg rent         : {fmt(enrichment.get('enrich_avg_rent'))}
+Flood zone       : {flood_zone}
+Dist to 100yr    : {flood_dist_100yr} ft
+Dist to 500yr    : {flood_dist_500yr} ft
+Elevation        : {flood_elevation} ft
+Building sqft    : {building_sqft}
+Year built       : {year_built}
+Fire station     : {fire_dist} mi
+Fire drive peak  : {fire_peak} min
+Fire drive night : {fire_night} min
+Neighborhood     : {segment}
+Income tier      : {income_tier}
+Avg income       : {avg_income}
+Avg home value   : {avg_home_value}
+Avg rent         : {avg_rent}
 
-Lead with the dominant risk factor. Be specific about what the enrichment data reveals.
-Reply with ONLY the narrative text, no JSON, no labels."""
+Previous assessment was based on geocode only — no enrichment data.
+Write 2-3 sentences: lead with the dominant risk factor the enrichment data revealed.
+Explicitly state what premium adjustment the enrichment data justifies compared to what the raw address suggested.
+Reply with ONLY the narrative text."""
 
-    def llm(prompt):
-        resp = requests.post(
-            OLLAMA_URL,
-            json={"model": OLLAMA_MODEL, "prompt": prompt, "stream": False},
-            timeout=60
-        )
-        raw = resp.json().get("response", "").strip()
-        return re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL).strip()
+# ── 4. Generate narratives ─────────────────────────────────────────────────
+def llm(prompt: str, timeout: int = 60) -> str:
+    resp = requests.post(
+        OLLAMA_URL,
+        json={"model": OLLAMA_MODEL, "prompt": prompt, "stream": False},
+        timeout=timeout
+    )
+    raw = resp.json().get("response", "").strip()
+    return re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL).strip()
+
+def generate_narratives(
+    raw_address: str,
+    proptype: str,
+    verify: dict,
+    geo: dict,
+    enrichment: dict
+) -> dict:
+    verified_addr = f"{verify['verified_address']}, {verify['verified_city']}, {verify['verified_state']} {verify['verified_zip']}"
+
+    # Build corrections summary
+    corrections = "None detected" if not verify.get("corrected") else (
+        f"Address standardized from '{raw_address}' to '{verified_addr}'"
+    )
+
+    precision_labels = {
+        "ADDRESS_POINT": "Building Level",
+        "STREET"       : "Street Level",
+        "POSTAL"       : "ZIP Code Level",
+        "CITY"         : "City Level"
+    }
+    precision = precision_labels.get(geo.get("precision", ""), geo.get("precision", ""))
+
+    narrative_raw = llm(PROMPT_RAW.format(
+        raw_address = raw_address,
+        proptype    = proptype
+    ))
+
+    narrative_verified = llm(PROMPT_VERIFIED.format(
+        raw_address      = raw_address,
+        verified_address = verified_addr,
+        corrections      = corrections,
+        proptype         = proptype
+    ))
+
+    narrative_geocoded = llm(PROMPT_GEOCODED.format(
+        verified_address = verified_addr,
+        latitude         = geo.get("latitude", ""),
+        longitude        = geo.get("longitude", ""),
+        precision        = precision,
+        pb_key           = geo.get("pb_key", ""),
+        proptype         = proptype
+    ))
+
+    narrative_enriched = llm(PROMPT_ENRICHED.format(
+        verified_address = verified_addr,
+        proptype         = proptype,
+        flood_zone       = fmt(enrichment.get("enrich_flood_zone")),
+        flood_dist_100yr = fmt(enrichment.get("enrich_flood_dist_100yr")),
+        flood_dist_500yr = fmt(enrichment.get("enrich_flood_dist_500yr")),
+        flood_elevation  = fmt(enrichment.get("enrich_flood_elevation")),
+        building_sqft    = fmt(enrichment.get("enrich_building_area_sqft")),
+        year_built       = fmt(enrichment.get("enrich_year_built")),
+        fire_dist        = fmt(enrichment.get("enrich_fire_station_dist_mi")),
+        fire_peak        = fmt(enrichment.get("enrich_fire_drivetime_peak_min")),
+        fire_night       = fmt(enrichment.get("enrich_fire_drivetime_night_min")),
+        segment          = fmt(enrichment.get("enrich_segment")),
+        income_tier      = fmt(enrichment.get("enrich_income_tier")),
+        avg_income       = fmt(enrichment.get("enrich_avg_income")),
+        avg_home_value   = fmt(enrichment.get("enrich_avg_home_value")),
+        avg_rent         = fmt(enrichment.get("enrich_avg_rent"))
+    ))
 
     return {
-        "basic_narrative"   : llm(basic_prompt),
-        "enhanced_narrative": llm(enhanced_prompt)
+        "narrative_raw"     : narrative_raw,
+        "narrative_verified": narrative_verified,
+        "narrative_geocoded": narrative_geocoded,
+        "narrative_enriched": narrative_enriched,
     }
 
-# ── 5. Full pipeline (single address) ─────────────────────────────────────
+# ── 5. Full pipeline ───────────────────────────────────────────────────────
 def run_pipeline(raw_address: str, proptype: str = "R") -> dict:
     result = {"raw_address": raw_address, "proptype": proptype}
 
-    # Verify
     verify = verify_address(raw_address)
     result["verify"] = verify
-
     if verify["status"] == "error":
         result["error"] = verify["error"]
         return result
@@ -220,16 +311,13 @@ def run_pipeline(raw_address: str, proptype: str = "R") -> dict:
     verified_addr = f"{verify['verified_address']}, {verify['verified_city']}, {verify['verified_state']} {verify['verified_zip']}"
     result["verified_address"] = verified_addr
 
-    # Geocode
     geo = geocode_address(verified_addr)
     result["geo"] = geo
 
-    # Enrich
     enrichment = enrich_address(verified_addr)
     result["enrichment"] = enrichment
 
-    # Narratives
-    narratives = generate_narratives(verified_addr, proptype, enrichment)
+    narratives = generate_narratives(raw_address, proptype, verify, geo, enrichment)
     result.update(narratives)
 
     return result
