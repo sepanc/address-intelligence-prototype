@@ -7,3 +7,4 @@ jupyter
 faker
 tqdm
 streamlit
+plotly
