@@ -8,3 +8,4 @@ faker
 tqdm
 streamlit
 plotly
+python-pptx
