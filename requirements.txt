@@ -6,3 +6,4 @@ ipykernel
 jupyter
 faker
 tqdm
+streamlit
